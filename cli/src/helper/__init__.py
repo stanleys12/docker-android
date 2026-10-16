@@ -1,6 +1,9 @@
 import logging
 import os
 
+from typing import Union
+from urllib.parse import unquote
+
 logger = logging.getLogger("helper")
 
 
@@ -54,3 +57,21 @@ def symlink_force(source: str, target: str) -> None:
     except FileExistsError:
         os.remove(target)
         os.symlink(source, target)
+
+
+def get_log_file(log_path: str, request_path: str) -> Union[str, None]:
+    """
+    Get absolute path of requested log file, only if it is a file inside the log directory
+
+    :param log_path: log directory
+    :param request_path: requested path
+    :return: absolute path of log file or None
+    """
+    root = os.path.realpath(log_path)
+    file_path = os.path.join(root, unquote(request_path).lstrip("/"))
+    if not os.path.isfile(file_path):
+        return None
+    file_path = os.path.realpath(file_path)
+    if os.path.commonpath([root, file_path]) != root:
+        return None
+    return file_path

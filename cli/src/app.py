@@ -13,7 +13,7 @@ from device import DeviceType
 from device.emulator import Emulator
 from device.geny_aws import GenyAWS
 from device.geny_saas import GenySAAS
-from helper import convert_str_to_bool, get_env_value_or_raise
+from helper import convert_str_to_bool, get_env_value_or_raise, get_log_file
 from constants import ENV
 from logger import log
 
@@ -183,7 +183,10 @@ def shared_log() -> None:
                     self.wfile.write(html.encode())
                 # open each selected log file
                 else:
-                    p = log_path + self.path
+                    p = get_log_file(log_path, self.path)
+                    if p is None:
+                        self.send_error(404, "File not found")
+                        return
                     try:
                         with open(p, "rb") as file:
                             self.send_response(200)
