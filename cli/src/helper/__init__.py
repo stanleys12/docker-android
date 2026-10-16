@@ -1,7 +1,5 @@
 import logging
 import os
-
-from typing import Union
 from urllib.parse import unquote
 
 logger = logging.getLogger("helper")
@@ -59,7 +57,7 @@ def symlink_force(source: str, target: str) -> None:
         os.symlink(source, target)
 
 
-def get_log_file(log_path: str, request_path: str) -> Union[str, None]:
+def get_log_file(log_path: str, request_path: str) -> str | None:
     """
     Get absolute path of requested log file, only if it is a file inside the log directory
 
